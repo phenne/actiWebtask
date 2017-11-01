@@ -3,17 +3,28 @@ package service;
 import dao.UserDao;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
+
+import static org.mockito.Mockito.mock;
 
 public class UserServiceTest {
 
+    private UserDao userDao;
+
     @Before
     public void init() {
-        UserDao userDaoMock = Mockito.mock(UserDao.class);
+        userDao = mock(UserDao.class);
     }
 
     @Test
-    public void generalTest() {
+    public void getUser() {
         UserService userService = new UserService();
+
+    }
+
+    @Test
+    public void generalTest() throws Exception {
+        UserService userService = new UserService();
+
+
     }
 }

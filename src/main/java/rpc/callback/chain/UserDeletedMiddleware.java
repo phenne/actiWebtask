@@ -29,7 +29,6 @@ public class UserDeletedMiddleware extends Middleware {
                 throw new ActiveUserDeletedException(ErrorType.CURRENT_USER_DELETED.name());
             }
 
-            setUser(currentUser);
             request.getSession().setAttribute("user", currentUser);
             return checkNext(request, method);
         } catch (SQLException e) {

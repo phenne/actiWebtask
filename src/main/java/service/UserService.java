@@ -6,7 +6,6 @@ import rpc.ManagerAccessRequired;
 import rpc.error.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
@@ -50,7 +49,7 @@ public class UserService {
     }
 
     public User getCurrentUser(HttpServletRequest request) throws UnknownErrorException {
-        return (User) request.getAttribute("user");
+        return (User) request.getSession().getAttribute("user");
     }
 
     public List<User> getAllUsers(UserDao userDao) throws UnknownErrorException {

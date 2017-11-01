@@ -19,8 +19,8 @@ public class ErrorCallback implements InvocationCallback {
 
         SessionMiddleware sessionMiddleware = new SessionMiddleware();
         sessionMiddleware
-                .linkWith(new UserDeletedMiddleware()
-                        .linkWith(new ManagerAccessMiddleware()));
+                .linkWith(new UserDeletedMiddleware())
+                .linkWith(new ManagerAccessMiddleware());
 
         Checker checker = new Checker();
         checker.setMiddleware(sessionMiddleware);

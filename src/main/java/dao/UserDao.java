@@ -117,7 +117,7 @@ public class UserDao {
         }
     }
 
-    public User getUserById(Integer id) throws SQLException {
+    public User getUserById(int id) throws SQLException {
 
         PreparedStatement statement = null;
         User user = null;
