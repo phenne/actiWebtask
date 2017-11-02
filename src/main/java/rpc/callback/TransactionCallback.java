@@ -1,6 +1,6 @@
 package rpc.callback;
 
-import bd.TransactionManager;
+import bd.Transaction;
 import org.jabsorb.callback.ErrorInvocationCallback;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +17,7 @@ public class TransactionCallback implements ErrorInvocationCallback {
     @Override
     public void postInvoke(Object context, Object instance, AccessibleObject accessibleObject, Object result) throws Exception {
         HttpServletRequest request = (HttpServletRequest) context;
-        TransactionManager transaction = (TransactionManager) request.getAttribute("transaction");
+        Transaction transaction = (Transaction) request.getAttribute("transaction");
 
         transaction.commit();
     }
@@ -25,7 +25,7 @@ public class TransactionCallback implements ErrorInvocationCallback {
     @Override
     public void invocationError(Object context, Object instance, AccessibleObject accessibleObject, Throwable error) {
         HttpServletRequest request = (HttpServletRequest) context;
-        TransactionManager transaction = (TransactionManager) request.getAttribute("transaction");
+        Transaction transaction = (Transaction) request.getAttribute("transaction");
 
         try {
             transaction.rollback();

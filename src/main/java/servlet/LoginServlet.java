@@ -1,7 +1,8 @@
 package servlet;
 
-import bd.TransactionManager;
+import bd.Transaction;
 import dao.UserDao;
+import dao.UserDaoFactory;
 import data.User;
 
 import javax.servlet.ServletException;
@@ -10,7 +11,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.Connection;
 import java.sql.SQLException;
 
 @WebServlet("/login")
@@ -35,9 +35,9 @@ public class LoginServlet extends HttpServlet {
         }
 
         User foundUser = null;
-        TransactionManager transaction = (TransactionManager) req.getAttribute("transaction");
+        Transaction transaction = (Transaction) req.getAttribute("transaction");
         try {
-            UserDao userDao = new UserDao();
+            UserDao userDao = UserDaoFactory.getInstance().createUserDao();
             userDao.associateTransaction(transaction);
 
             foundUser = userDao.getUserByUsername(req.getParameter("username"));

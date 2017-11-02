@@ -3,7 +3,7 @@ package bd;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class TransactionManager {
+public class Transaction {
 
     private Connection connection;
 

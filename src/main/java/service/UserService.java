@@ -48,14 +48,14 @@ public class UserService {
         }
     }
 
-    public User getCurrentUser(HttpServletRequest request) throws UnknownErrorException {
+    public User getCurrentUser(HttpServletRequest request) {
         return (User) request.getSession().getAttribute("user");
     }
 
     public List<User> getAllUsers(UserDao userDao) throws UnknownErrorException {
         try {
             return userDao.getAllUsers();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw new UnknownErrorException(ErrorType.UNKNOWN_ERROR.name());
         }
     }

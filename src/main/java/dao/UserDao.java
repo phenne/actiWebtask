@@ -1,6 +1,6 @@
 package dao;
 
-import bd.TransactionManager;
+import bd.Transaction;
 import data.User;
 
 import java.sql.Connection;
@@ -15,16 +15,16 @@ public class UserDao {
     private Connection connection;
 
     /**
-     * Associate this userDao with given transactionManager, should be called before any operation.
+     * Associate this userDao with given transaction, should be called before any operation.
      *
-     * @param transactionManager
+     * @param transaction
      * @throws SQLException
      */
-    public void associateTransaction(TransactionManager transactionManager) throws SQLException {
-        if (transactionManager.getConnection() == null) {
-            transactionManager.startTransaction();
+    public void associateTransaction(Transaction transaction) throws SQLException {
+        if (transaction.getConnection() == null) {
+            transaction.startTransaction();
         }
-        this.connection = transactionManager.getConnection();
+        this.connection = transaction.getConnection();
     }
 
     public static void closeQuietly(AutoCloseable closeable) {
@@ -83,7 +83,7 @@ public class UserDao {
         PreparedStatement statement = null;
 
         try {
-            if (user.getPassword().isEmpty()) {
+            if (user.getPassword() == null || user.getPassword().isEmpty()) {
                 statement = connection.prepareStatement("UPDATE users SET first_name = ?, last_name = ?, username = ?, is_manager = ? WHERE user_id = ?");
                 statement.setBoolean(4, user.isManager());
                 statement.setInt(5, user.getId());
@@ -160,6 +160,22 @@ public class UserDao {
                         resultSet.getBoolean("is_manager"));
             }
             return user;
+        } finally {
+            closeQuietly(statement);
+        }
+    }
+
+    public int countUsers() throws SQLException {
+
+        PreparedStatement statement = null;
+
+        try {
+            statement = connection.prepareStatement("SELECT COUNT(user_id) FROM users");
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt(1);
+            }
+            return 0;
         } finally {
             closeQuietly(statement);
         }

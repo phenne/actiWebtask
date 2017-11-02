@@ -1,6 +1,6 @@
 package filter;
 
-import bd.TransactionManager;
+import bd.Transaction;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
@@ -17,8 +17,8 @@ public class TransactionFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
-        TransactionManager transactionManager = new TransactionManager();
-        req.setAttribute("transaction", transactionManager);
+        Transaction transaction = new Transaction();
+        req.setAttribute("transaction", transaction);
         chain.doFilter(req, response);
     }
 
