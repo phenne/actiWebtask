@@ -2,7 +2,6 @@ package servlet;
 
 import bd.Transaction;
 import dao.UserDao;
-import dao.UserDaoFactory;
 import data.User;
 
 import javax.servlet.ServletException;
@@ -35,19 +34,15 @@ public class LoginServlet extends HttpServlet {
         }
 
         User foundUser = null;
-        Transaction transaction = (Transaction) req.getAttribute("transaction");
+
         try {
-            UserDao userDao = UserDaoFactory.getInstance().createUserDao();
-            userDao.associateTransaction(transaction);
-
-            foundUser = userDao.getUserByUsername(req.getParameter("username"));
-
-            transaction.commit();
+            Transaction transaction = (Transaction) req.getAttribute("transaction");
+            foundUser = getUser(transaction, req.getParameter("username"));
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        String result = checkUserData(foundUser, password);
 
+        String result = checkUserData(foundUser, password);
         if (result == null) {
             req.getSession(true).setAttribute("user", foundUser);
             resp.sendRedirect("/");
@@ -57,7 +52,16 @@ public class LoginServlet extends HttpServlet {
         }
     }
 
-    private String checkUserData(User user, String password) {
+    User getUser(Transaction transaction, String userName) throws SQLException {
+        UserDao userDao = new UserDao();
+        userDao.associateTransaction(transaction);
+        User foundUser = userDao.getUserByUsername(userName);
+        transaction.commit();
+
+        return foundUser;
+    }
+
+    String checkUserData(User user, String password) {
         if (user == null) {
             return "Invalid username!";
         }

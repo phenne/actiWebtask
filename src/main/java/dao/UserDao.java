@@ -27,7 +27,7 @@ public class UserDao {
         this.connection = transaction.getConnection();
     }
 
-    public static void closeQuietly(AutoCloseable closeable) {
+    public void closeQuietly(AutoCloseable closeable) {
         try {
             if (closeable != null) {
                 closeable.close();

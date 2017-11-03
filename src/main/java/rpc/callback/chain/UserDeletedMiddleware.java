@@ -2,7 +2,6 @@ package rpc.callback.chain;
 
 import bd.Transaction;
 import dao.UserDao;
-import dao.UserDaoFactory;
 import data.User;
 import rpc.error.ActiveUserDeletedException;
 import rpc.error.ErrorType;
@@ -15,11 +14,16 @@ import java.sql.SQLException;
 
 public class UserDeletedMiddleware extends Middleware {
 
+    private UserDao userDao;
+
+    public UserDeletedMiddleware(UserDao userDao) {
+        this.userDao = userDao;
+    }
+
     @Override
     public boolean check(HttpServletRequest request, Method method) throws RpcException {
         try {
             Transaction transaction = (Transaction) request.getAttribute("transaction");
-            UserDao userDao = UserDaoFactory.getInstance().createUserDao();
             userDao.associateTransaction(transaction);
 
             User sessionUser = (User) request.getSession().getAttribute("user");

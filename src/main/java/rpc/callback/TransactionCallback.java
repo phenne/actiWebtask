@@ -24,10 +24,9 @@ public class TransactionCallback implements ErrorInvocationCallback {
 
     @Override
     public void invocationError(Object context, Object instance, AccessibleObject accessibleObject, Throwable error) {
-        HttpServletRequest request = (HttpServletRequest) context;
-        Transaction transaction = (Transaction) request.getAttribute("transaction");
-
         try {
+            HttpServletRequest request = (HttpServletRequest) context;
+            Transaction transaction = (Transaction) request.getAttribute("transaction");
             transaction.rollback();
         } catch (SQLException e) {
             e.printStackTrace();

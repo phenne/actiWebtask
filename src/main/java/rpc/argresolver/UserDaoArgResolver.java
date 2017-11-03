@@ -2,7 +2,6 @@ package rpc.argresolver;
 
 import bd.Transaction;
 import dao.UserDao;
-import dao.UserDaoFactory;
 import org.jabsorb.localarg.LocalArgResolveException;
 import org.jabsorb.localarg.LocalArgResolver;
 
@@ -18,7 +17,7 @@ public class UserDaoArgResolver implements LocalArgResolver {
             HttpServletRequest request = (HttpServletRequest) o;
 
             Transaction transaction = (Transaction) request.getAttribute("transaction");
-            userDao = UserDaoFactory.getInstance().createUserDao();
+            userDao = new UserDao();
             userDao.associateTransaction(transaction);
         } catch (SQLException e) {
             e.printStackTrace();
