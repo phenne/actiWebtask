@@ -6,7 +6,7 @@ class CreateEditModal {
     }
 
     openModal() {
-        let thisFunc = this.sendActionRequest.bind(this);
+        let thisFunc = this.sendRequest.bind(this);
 
         let errorOutput = document.getElementById("crModalErrorOutput");
         errorOutput.innerHTML = "";
@@ -24,7 +24,7 @@ class CreateEditModal {
         this.strategy.prepareModal(this.modalFields);
     }
 
-    async sendActionRequest() {
+    async sendRequest() {
         let validationService = new ValidationService(
             [this.modalFields.userName, this.modalFields.firstName, this.modalFields.lastName],
             [this.modalFields.password, this.modalFields.confirmPassword],
@@ -36,13 +36,14 @@ class CreateEditModal {
             let isOk = await this.strategy.sendActionRequest(this.modalFields);
             console.log("isok" + isOk);
             if (isOk) {
-                this.strategy.afterRequestAction();
-                this._closeModal();
+                $("#successAlert").show();
+                new TableActions().clearTable();
+                new TableActions().generateTable();
+                setTimeout(() => {
+                    $("#successAlert").hide();
+                }, 3000);
+                $("#generalModal").modal('hide')
             }
         }
-    }
-
-    _closeModal() {
-        $("#generalModal").modal('hide')
     }
 }

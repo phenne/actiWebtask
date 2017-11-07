@@ -33,14 +33,4 @@ class CreateUserStrategy {
         let user = new User(fields.firstName.value, fields.lastName.value, fields.userName.value, fields.password.value, fields.manager.checked);
         return new CreateUserRequest(user, fields.errorMessage).send();
     }
-
-    //TODO выделить общий механизм
-    afterRequestAction() {
-        $("#successAlert").show();
-        new TableActions().clearTable();
-        new TableActions().generateTable();
-        setTimeout(() => {
-            $("#successAlert").hide();
-        }, 3000);
-    }
 }

@@ -23,20 +23,11 @@ class EditUserStrategy {
         fields.userName.value = this.user.userName;
 
         let currentUserReqResult = await new CurrentUserRequest().send();
-        let currentUserResult = currentUserReqResult.result;
+        let currentUser = currentUserReqResult.result;
 
         if (this.user.manager) {
             fields.manager.checked = true;
-        }
-        if (this.user.userName === currentUserReqResult.userName) {
-            fields.manager.disabled = true;
-        }
-
-        if (currentUserResult.userName === this.user.userName) {
-            fields.manager.checked = true;
-            fields.manager.disabled = true;
-        } else if (this.user.manager) {
-            fields.manager.checked = true;
+            fields.manager.disabled = this.user.userName === currentUser.userName;
         }
     };
 
@@ -53,14 +44,4 @@ class EditUserStrategy {
 
         return new EditUserRequest(user, fields.errorMessage).send();
     }
-
-    //TODO выделить в общий механизм
-    afterRequestAction() {
-        $("#successAlert").show();
-        new TableActions().clearTable();
-        new TableActions().generateTable();
-        setTimeout(() => {
-            $("#successAlert").hide();
-        }, 3000);
-    };
 }
