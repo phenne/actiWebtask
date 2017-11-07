@@ -8,7 +8,7 @@
     <script src="/src/lib/bootstrap.min.js"></script>
     <script src="/src/User.js"></script>
     <script src="/src/RequestSender.js"></script>
-    <script src="/src/UserListPageActions.js"></script>
+    <script src="/src/userlist/UserListPageActions.js"></script>
     <script src="/src/validationService.js"></script>
     <script src="/src/modal/CreateEditModalFields.js"></script>
     <script src="/src/modal/CreateEditModal.js"></script>
