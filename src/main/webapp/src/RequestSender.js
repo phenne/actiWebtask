@@ -1,3 +1,9 @@
+import {
+    AccessErrorHandler, CurrentUserDeletedErrorHandler, SessionErrorHandler,
+    UserAlreadyExistsErrorHandler, UserDeletedErrorHandler
+} from "./ErrorHandlers";
+import $ from 'jquery';
+
 class SimpleRequest {
 
     constructor(method) {
@@ -34,21 +40,21 @@ class SimpleRequest {
     }
 }
 
-class CurrentUserRequest extends SimpleRequest {
+export class CurrentUserRequest extends SimpleRequest {
 
     constructor() {
         super("getCurrentUser");
     }
 }
 
-class AllUsersRequest extends SimpleRequest {
+export class AllUsersRequest extends SimpleRequest {
 
     constructor() {
         super("getAllUsers");
     }
 }
 
-class ManagerRequest extends SimpleRequest {
+export class ManagerRequest extends SimpleRequest {
 
     constructor(method, errorField) {
         super(method);
@@ -62,7 +68,7 @@ class ManagerRequest extends SimpleRequest {
 }
 
 
-class EditUserRequest extends ManagerRequest {
+export class EditUserRequest extends ManagerRequest {
 
     constructor(user, errorField) {
         super("editUser", errorField);
@@ -72,7 +78,7 @@ class EditUserRequest extends ManagerRequest {
     }
 }
 
-class CreateUserRequest extends ManagerRequest {
+export class CreateUserRequest extends ManagerRequest {
 
     constructor(user, errorField) {
         super("createUser", errorField);
@@ -81,7 +87,7 @@ class CreateUserRequest extends ManagerRequest {
     }
 }
 
-class DeleteUserRequest extends ManagerRequest {
+export class DeleteUserRequest extends ManagerRequest {
 
     constructor(id, errorField) {
         super("deleteUser", errorField);

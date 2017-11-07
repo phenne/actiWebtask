@@ -1,4 +1,4 @@
-class CreateEditModalFields {
+export default class CreateEditModalFields {
 
     constructor() {
         this.firstName = document.getElementById("firstName");

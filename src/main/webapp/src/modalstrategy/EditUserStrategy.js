@@ -1,4 +1,9 @@
-class EditUserStrategy {
+import $ from "jquery";
+import {CurrentUserRequest} from "../RequestSender";
+import User from "../User";
+import {EditUserRequest} from "../RequestSender";
+
+export default class EditUserStrategy {
 
     constructor(user) {
         this.user = user;

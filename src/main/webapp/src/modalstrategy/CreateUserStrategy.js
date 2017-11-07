@@ -1,8 +1,9 @@
-// import {CreateUserRequest} from "../RequestSender";
-// import TableActions from "../UserListPageActions";
-// import User from "../user";
+import $ from "jquery";
+import {CreateUserRequest} from "../RequestSender";
+import User from "../User";
 
-class CreateUserStrategy {
+
+export default class CreateUserStrategy {
 
     constructor() {
         this.headTitle = "Create user";

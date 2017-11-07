@@ -1,4 +1,12 @@
-class TableActions {
+import $ from "jquery";
+import CreateEditModal from "../modal/CreateEditModal";
+import DeleteModal from "../modal/DeleteModal";
+import {CurrentUserRequest} from "../RequestSender"
+import {AllUsersRequest} from "../RequestSender";
+import CreateUserStrategy from "../modalstrategy/CreateUserStrategy";
+import EditUserStrategy from "../modalstrategy/EditUserStrategy";
+
+export default class TableActions {
 
     clearTable() {
         $("#userListTable tbody tr").remove();
@@ -40,7 +48,7 @@ class TableActions {
             let bgDiv = $(buttonGroup).append($("<div class='btn-group'>"));
 
             let editButton = $("<button class='btn' type='button'>Edit</button>");
-            let deleteButton = $("<button class='btn' type='button'>Delete</button>")
+            let deleteButton = $("<button class='btn' type='button'>Delete</button>");
 
             bgDiv.append(editButton);
             bgDiv.append(deleteButton);

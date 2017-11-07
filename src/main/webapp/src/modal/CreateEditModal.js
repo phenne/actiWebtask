@@ -1,4 +1,10 @@
-class CreateEditModal {
+import ValidationService from "../ValidationService";
+import TableActions from "../userlist/UserListPageActions";
+import CreateEditModalFields from "./CreateEditModalFields";
+import $ from "jquery";
+import "bootstrap";
+
+export default class CreateEditModal {
 
     constructor(strategy) {
         this.strategy = strategy;

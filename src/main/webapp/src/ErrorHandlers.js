@@ -1,11 +1,11 @@
-class SessionErrorHandler {
+export class SessionErrorHandler {
 
     handleError() {
         location.replace("/login");
     }
 }
 
-class AccessErrorHandler {
+export class AccessErrorHandler {
 
     constructor() {
         this.message = "You should be a manager to perform this operation!"
@@ -19,7 +19,7 @@ class AccessErrorHandler {
     }
 }
 
-class UserAlreadyExistsErrorHandler {
+export class UserAlreadyExistsErrorHandler {
 
     constructor() {
         this.message = "User with such username already exists!";
@@ -30,7 +30,7 @@ class UserAlreadyExistsErrorHandler {
     }
 }
 
-class UserDeletedErrorHandler {
+export class UserDeletedErrorHandler {
 
     constructor() {
         this.message = "User has already been deleted";
@@ -44,7 +44,7 @@ class UserDeletedErrorHandler {
     }
 }
 
-class CurrentUserDeletedErrorHandler {
+export class CurrentUserDeletedErrorHandler {
 
     handleError() {
         alert("Someone has deleted you!");
