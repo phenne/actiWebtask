@@ -16,10 +16,22 @@
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "babel-preset-latest": "^6.24.1",
+    "bootstrap-sass": "^3.3.7",
+    "bootstrap-webpack": "0.0.6",
+    "css-loader": "^0.28.7",
+    "imports-loader": "^0.7.1",
+    "less": "^2.7.3",
+    "less-loader": "^4.0.5",
+    "node-sass": "^4.6.0",
+    "resolve-url-loader": "^2.2.0",
+    "sass-loader": "^6.0.6",
+    "style-loader": "^0.19.0",
+    "url-loader": "^0.6.2",
     "webpack": "^3.8.1"
   },
   "dependencies": {
     "bootstrap": "^3.3.7",
+    "bootstrap-loader": "^2.2.0",
     "jquery": "^3.2.1"
   }
 }

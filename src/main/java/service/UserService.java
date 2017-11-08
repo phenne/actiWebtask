@@ -17,9 +17,9 @@ public class UserService {
         try {
             userDao.insertUser(user);
         } catch (SQLIntegrityConstraintViolationException e) {
-            throw new UserAlreadyExistsException(ErrorType.USER_ALREADY_EXISTS.name());
+            throw new UserAlreadyExistsException();
         } catch (Exception e) {
-            throw new UnknownErrorException(ErrorType.UNKNOWN_ERROR.name());
+            throw new UnknownErrorException();
         }
     }
 
@@ -27,24 +27,28 @@ public class UserService {
     public void editUser(User user, UserDao userDao) throws RpcException {
         try {
             if (userDao.updateUser(user) == 0) {
-                throw new UserDeletedException(ErrorType.USER_DELETED.name());
+                throw new UserDeletedException();
             }
         } catch (SQLIntegrityConstraintViolationException e) {
-            throw new UserAlreadyExistsException(ErrorType.USER_ALREADY_EXISTS.name());
+            throw new UserAlreadyExistsException();
         } catch (SQLException e) {
-            throw new UnknownErrorException(ErrorType.UNKNOWN_ERROR.name());
+            throw new UnknownErrorException();
         }
     }
 
     @ManagerAccessRequired
-    public void deleteUser(int id, UserDao userDao) throws RpcException {
+    public void deleteUser(int id, UserDao userDao, HttpServletRequest request) throws RpcException {
 
         try {
+            User user = (User) request.getSession().getAttribute("user");
+            if (user.getId() == id) {
+                throw new UnknownErrorException();
+            }
             if (userDao.deleteUser(id) == 0) {
-                throw new UserDeletedException(ErrorType.USER_DELETED.name());
+                throw new UserDeletedException();
             }
         } catch (SQLException e) {
-            throw new UnknownErrorException(ErrorType.UNKNOWN_ERROR.name());
+            throw new UnknownErrorException();
         }
     }
 
@@ -52,11 +56,11 @@ public class UserService {
         return (User) request.getSession().getAttribute("user");
     }
 
-    public List<User> getAllUsers(UserDao userDao) throws UnknownErrorException {
+    public List<User> getAllUsers(UserDao userDao) throws RpcException {
         try {
             return userDao.getAllUsers();
         } catch (Exception e) {
-            throw new UnknownErrorException(ErrorType.UNKNOWN_ERROR.name());
+            throw new UnknownErrorException();
         }
     }
 }

@@ -51,3 +51,11 @@ export class CurrentUserDeletedErrorHandler {
         location.replace("/login");
     }
 }
+
+export class UnknownErrorHandler {
+
+    handleError() {
+        alert("Unknown error has occurred");
+        location.replace("/");
+    }
+}

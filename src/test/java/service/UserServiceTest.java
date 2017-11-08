@@ -163,6 +163,9 @@ public class UserServiceTest {
 
     @Test
     public void deleteUser_success() throws Exception {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getAttribute("user")).thenReturn(new User());
+
         doAnswer(invocation -> {
             int id = invocation.getArgument(0);
             for (int i = 0; i < users.size(); i++) {
@@ -175,22 +178,26 @@ public class UserServiceTest {
 
         int initSize = users.size();
 
-        userService.deleteUser(2, userDao);
+        userService.deleteUser(2, userDao, request);
         assertEquals(initSize - 1, users.size());
     }
 
     @Test(expected = UserDeletedException.class)
     public void deleteUser_userDeleted() throws Exception {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getAttribute("user")).thenReturn(new User());
         when(userDao.deleteUser(anyInt())).thenReturn(0);
 
-        userService.deleteUser(1, userDao);
+        userService.deleteUser(1, userDao, request);
     }
 
     @Test(expected = UnknownErrorException.class)
     public void deleteUser_unknownError() throws Exception {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getAttribute("user")).thenReturn(new User());
         when(userDao.deleteUser(anyInt())).thenThrow(SQLException.class);
 
-        userService.deleteUser(1, userDao);
+        userService.deleteUser(1, userDao, request);
     }
 
     private User getUserById(int id) {

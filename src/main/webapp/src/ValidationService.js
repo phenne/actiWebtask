@@ -1,5 +1,3 @@
-import $ from "jquery";
-
 export default class ValidationService {
 
     constructor(dataFields, passwordFields, isPasswordRequired) {

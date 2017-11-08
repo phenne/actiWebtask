@@ -1,7 +1,5 @@
-import $ from "jquery";
 import {DeleteUserRequest} from "../RequestSender";
 import TableActions from "../userlist/UserListPageActions";
-import "bootstrap";
 
 export default class DeleteModal {
 

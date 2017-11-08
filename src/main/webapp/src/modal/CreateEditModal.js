@@ -1,8 +1,6 @@
 import ValidationService from "../ValidationService";
 import TableActions from "../userlist/UserListPageActions";
 import CreateEditModalFields from "./CreateEditModalFields";
-import $ from "jquery";
-import "bootstrap";
 
 export default class CreateEditModal {
 
@@ -43,8 +41,9 @@ export default class CreateEditModal {
             console.log("isok" + isOk);
             if (isOk) {
                 $("#successAlert").show();
-                new TableActions().clearTable();
-                new TableActions().generateTable();
+                let tableActions = new TableActions();
+                tableActions.clearTable();
+                tableActions.generateTable();
                 setTimeout(() => {
                     $("#successAlert").hide();
                 }, 3000);

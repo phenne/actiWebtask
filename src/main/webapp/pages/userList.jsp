@@ -5,8 +5,8 @@
 <head>
     <link rel="stylesheet" href="/src/lib/css/bootstrap.css">
     <script src="../src/dist/bundle.js"></script>
-    <script src="/src/lib/jquery-3.2.1.js"></script>
-    <script src="/src/lib/bootstrap.min.js"></script>
+    <%--<script src="/src/lib/jquery-3.2.1.js"></script>--%>
+    <%--<script src="/src/lib/bootstrap.min.js"></script>--%>
     <%--<script src="/src/lib/jquery-3.2.1.js"></script>
     <script src="/src/User.js"></script>
     <script src="/src/RequestSender.js"></script>
@@ -57,7 +57,7 @@
         </table>
     </div>
     <div id="bottomButtons" class="row">
-        <input class="btn" type="submit" value="Refresh">
+        <input class="btn" type="submit" id="refreshButton" value="Refresh">
     </div>
 </div>
 
@@ -73,7 +73,7 @@
                     <div class="form-group">
                         <label class="control-label col-sm-4" for="username">Username:</label>
                         <div class="col-sm-8">
-                            <input class="form-control" type="text" id="username" value="hello">
+                            <input class="form-control" type="text" id="username">
                         </div>
                     </div>
                     <div class="form-group">
@@ -101,7 +101,7 @@
                         </div>
                     </div>
                     <div class="checkbox">
-                        <label class="control-label col-sm-4">Manager</label>
+                        <label class="control-label col-sm-4" for="manager">Manager</label>
                         <div class="col-sm-8">
                             <input type="checkbox" id="manager">
                         </div>

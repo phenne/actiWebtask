@@ -1,7 +1,5 @@
-import $ from "jquery";
 import {CreateUserRequest} from "../RequestSender";
 import User from "../User";
-
 
 export default class CreateUserStrategy {
 

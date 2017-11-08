@@ -1,8 +1,6 @@
-import $ from "jquery";
 import CreateEditModal from "../modal/CreateEditModal";
 import DeleteModal from "../modal/DeleteModal";
-import {CurrentUserRequest} from "../RequestSender"
-import {AllUsersRequest} from "../RequestSender";
+import {AllUsersRequest, CurrentUserRequest} from "../RequestSender"
 import CreateUserStrategy from "../modalstrategy/CreateUserStrategy";
 import EditUserStrategy from "../modalstrategy/EditUserStrategy";
 
@@ -47,20 +45,20 @@ export default class TableActions {
             let buttonGroup = tableRows[i].insertCell(3);
             let bgDiv = $(buttonGroup).append($("<div class='btn-group'>"));
 
-            let editButton = $("<button class='btn' type='button'>Edit</button>");
-            let deleteButton = $("<button class='btn' type='button'>Delete</button>");
+            let currentEditButtonId = "editButton" + i;
+            let currentDeleteButtonId = "deleteButton" + i;
 
-            bgDiv.append(editButton);
-            bgDiv.append(deleteButton);
+            bgDiv.append($(`<button class="btn" type="button" id="${currentEditButtonId}">Edit</button>`));
+            bgDiv.append($(`<button class="btn" type="button" id="${currentDeleteButtonId}">Delete</button>`));
 
-            editButton.on("click", () => {
-                new CreateEditModal(new EditUserStrategy(this.userList[i])).openModal();
-            });
+            $(`#${currentEditButtonId}`).on("click", () =>
+                new CreateEditModal(new EditUserStrategy(this.userList[i])).openModal()
+            );
 
             if (this.currentUser.userName === this.userList[i].userName) {
-                deleteButton.prop("disabled", true);
+                $(`#${currentDeleteButtonId}`).prop("disabled", true);
             } else {
-                deleteButton.on("click", () => {
+                $(`#${currentDeleteButtonId}`).on("click", () => {
                     new DeleteModal(this.userList[i]).openModal();
                 })
             }
@@ -70,10 +68,9 @@ export default class TableActions {
     }
 
     addCreateButton() {
-        let createButton = $("<button type='button' class='btn' id='createButton'>Create</button>");
+        $("#bottomButtons").append($("<button type='button' class='btn' id='createButton'>Create</button>"));
 
-        $("#bottomButtons").append(createButton);
-        $(createButton).on("click", () => {
+        $("#createButton").on("click", () => {
             new CreateEditModal(new CreateUserStrategy()).openModal();
         });
     }

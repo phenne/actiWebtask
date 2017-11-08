@@ -1,8 +1,7 @@
 import {
-    AccessErrorHandler, CurrentUserDeletedErrorHandler, SessionErrorHandler,
+    AccessErrorHandler, CurrentUserDeletedErrorHandler, SessionErrorHandler, UnknownErrorHandler,
     UserAlreadyExistsErrorHandler, UserDeletedErrorHandler
 } from "./ErrorHandlers";
-import $ from 'jquery';
 
 class SimpleRequest {
 
@@ -12,6 +11,7 @@ class SimpleRequest {
         this.errorHandlers = {
             SESSION_EXPIRED: new SessionErrorHandler(),
             CURRENT_USER_DELETED: new CurrentUserDeletedErrorHandler(),
+            UNKNOWN_ERROR: new UnknownErrorHandler()
         };
     }
 

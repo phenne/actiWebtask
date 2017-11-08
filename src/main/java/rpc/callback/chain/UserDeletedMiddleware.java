@@ -31,13 +31,13 @@ public class UserDeletedMiddleware extends Middleware {
 
             if (currentUser == null) {
                 request.getSession().removeAttribute("user");
-                throw new ActiveUserDeletedException(ErrorType.CURRENT_USER_DELETED.name());
+                throw new ActiveUserDeletedException(ErrorType.CURRENT_USER_DELETED);
             }
 
             request.getSession().setAttribute("user", currentUser);
             return checkNext(request, method);
         } catch (SQLException e) {
-            throw new UnknownErrorException(ErrorType.UNKNOWN_ERROR.name());
+            throw new UnknownErrorException(ErrorType.UNKNOWN_ERROR);
         }
     }
 }

@@ -1,8 +1,11 @@
-//TODO: загрузка бутстрапа, jquery в глобальную видимость.
-//TODO: чекнуть тесты.
-//TODO: перевести на темплейты.
 import TableActions from "./userlist/UserListPageActions";
+import "bootstrap";
 
 window.onload = function () {
-   new TableActions().generateTable();
+   let tableActions = new TableActions();
+   tableActions.generateTable();
+   $("#refreshButton").on("click", () => {
+         tableActions.clearTable();
+         tableActions.generateTable();
+   });
 };

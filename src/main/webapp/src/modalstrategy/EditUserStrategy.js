@@ -1,4 +1,3 @@
-import $ from "jquery";
 import {CurrentUserRequest} from "../RequestSender";
 import User from "../User";
 import {EditUserRequest} from "../RequestSender";

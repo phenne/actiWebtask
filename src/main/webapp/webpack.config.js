@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
     entry: ['babel-polyfill' ,"./src/Main.js"],
@@ -17,7 +18,13 @@ module.exports = {
                         presets: ["babel-preset-latest"]
                     }
                 }
-            }
-        ],
-    }
+            },
+        ]
+    },
+    plugins: [
+        new webpack.ProvidePlugin({
+            $: "jquery",
+            jQuery: "jquery"
+        })
+    ]
 };

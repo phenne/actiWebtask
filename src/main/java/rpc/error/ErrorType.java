@@ -7,5 +7,8 @@ public enum  ErrorType {
     MANAGER_ACCESS_REQUIRED,
     USER_ALREADY_EXISTS,
     UNKNOWN_ERROR,
-    USER_DELETED
+    USER_DELETED;
+
+    String type;
+
 }
