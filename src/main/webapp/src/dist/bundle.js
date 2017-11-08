@@ -13351,20 +13351,20 @@ var TableActions = function () {
                 var buttonGroup = tableRows[i].insertCell(3);
                 var bgDiv = $(buttonGroup).append($("<div class='btn-group'>"));
 
-                var editButton = $("<button class='btn' type='button'>Edit</button>");
-                var deleteButton = $("<button class='btn' type='button'>Delete</button>");
+                var currentEditButtonId = "editButton" + i;
+                var currentDeleteButtonId = "deleteButton" + i;
 
-                bgDiv.append(editButton);
-                bgDiv.append(deleteButton);
+                bgDiv.append($("<button class=\"btn\" type=\"button\" id=\"" + currentEditButtonId + "\">Edit</button>"));
+                bgDiv.append($("<button class=\"btn\" type=\"button\" id=\"" + currentDeleteButtonId + "\">Delete</button>"));
 
-                editButton.on("click", function () {
-                    new _CreateEditModal2.default(new _EditUserStrategy2.default(_this.userList[i])).openModal();
+                $("#" + currentEditButtonId).on("click", function () {
+                    return new _CreateEditModal2.default(new _EditUserStrategy2.default(_this.userList[i])).openModal();
                 });
 
                 if (_this.currentUser.userName === _this.userList[i].userName) {
-                    deleteButton.prop("disabled", true);
+                    $("#" + currentDeleteButtonId).prop("disabled", true);
                 } else {
-                    deleteButton.on("click", function () {
+                    $("#" + currentDeleteButtonId).on("click", function () {
                         new _DeleteModal2.default(_this.userList[i]).openModal();
                     });
                 }
@@ -13379,10 +13379,9 @@ var TableActions = function () {
     }, {
         key: "addCreateButton",
         value: function addCreateButton() {
-            var createButton = $("<button type='button' class='btn' id='createButton'>Create</button>");
+            $("#bottomButtons").append($("<button type='button' class='btn' id='createButton'>Create</button>"));
 
-            $("#bottomButtons").append(createButton);
-            $(createButton).on("click", function () {
+            $("#createButton").on("click", function () {
                 new _CreateEditModal2.default(new _CreateUserStrategy2.default()).openModal();
             });
         }
@@ -19717,7 +19716,7 @@ module.exports = function (regExp, replace) {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-
+/* WEBPACK VAR INJECTION */(function($) {
 
 var _UserListPageActions = __webpack_require__(91);
 
@@ -19727,12 +19726,15 @@ __webpack_require__(339);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-//TODO: загрузка бутстрапа, jquery в глобальную видимость.
-//TODO: чекнуть тесты.
-//TODO: перевести на темплейты.
 window.onload = function () {
-   new _UserListPageActions2.default().generateTable();
+   var tableActions = new _UserListPageActions2.default();
+   tableActions.generateTable();
+   $("#refreshButton").on("click", function () {
+      tableActions.clearTable();
+      tableActions.generateTable();
+   });
 };
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ }),
 /* 332 */
@@ -19797,7 +19799,7 @@ var CreateEditModal = function () {
         key: "sendRequest",
         value: function () {
             var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-                var validationService, isOk;
+                var validationService, isOk, tableActions;
                 return regeneratorRuntime.wrap(function _callee$(_context) {
                     while (1) {
                         switch (_context.prev = _context.next) {
@@ -19818,8 +19820,10 @@ var CreateEditModal = function () {
                                 console.log("isok" + isOk);
                                 if (isOk) {
                                     $("#successAlert").show();
-                                    new _UserListPageActions2.default().clearTable();
-                                    new _UserListPageActions2.default().generateTable();
+                                    tableActions = new _UserListPageActions2.default();
+
+                                    tableActions.clearTable();
+                                    tableActions.generateTable();
                                     setTimeout(function () {
                                         $("#successAlert").hide();
                                     }, 3000);

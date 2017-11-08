@@ -15,7 +15,7 @@ public class ManagerAccessMiddleware extends Middleware {
     public boolean check(HttpServletRequest request, Method method) throws RpcException {
         User user = (User) request.getSession().getAttribute("user");
         if (method.isAnnotationPresent(ManagerAccessRequired.class) && !user.isManager()) {
-            throw new ManagerAccessException(ErrorType.MANAGER_ACCESS_REQUIRED);
+            throw new ManagerAccessException();
         }
         return checkNext(request, method);
     }

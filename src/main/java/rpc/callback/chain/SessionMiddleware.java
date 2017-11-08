@@ -1,6 +1,5 @@
 package rpc.callback.chain;
 
-import rpc.error.ErrorType;
 import rpc.error.RpcException;
 import rpc.error.SessionInvalidatedException;
 
@@ -12,7 +11,7 @@ public class SessionMiddleware extends Middleware {
     @Override
     public boolean check(HttpServletRequest request, Method method) throws RpcException {
         if (request.getSession() == null || request.getSession().getAttribute("user") == null) {
-            throw new SessionInvalidatedException(ErrorType.SESSION_EXPIRED);
+            throw new SessionInvalidatedException();
         }
         return checkNext(request, method);
     }
