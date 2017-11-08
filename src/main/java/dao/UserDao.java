@@ -3,10 +3,7 @@ package dao;
 import bd.Transaction;
 import data.User;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,12 +57,13 @@ public class UserDao {
         }
     }
 
-    public void insertUser(User user) throws SQLException {
+    public int insertUser(User user) throws SQLException {
         PreparedStatement statement = null;
 
         try {
+            int id = 0;
             statement = connection.prepareStatement("INSERT INTO users(first_name, last_name, username, password, is_manager) " +
-                    "VALUES (?, ?, ?, ?, ?)");
+                    "VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 
             statement.setString(1, user.getFirstName());
             statement.setString(2, user.getLastName());
@@ -74,6 +72,12 @@ public class UserDao {
             statement.setBoolean(5, user.isManager());
 
             statement.executeUpdate();
+
+            ResultSet generatedKeys = statement.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                id = generatedKeys.getInt(1);
+            }
+            return id;
         } finally {
             closeQuietly(statement);
         }
@@ -178,6 +182,17 @@ public class UserDao {
             return 0;
         } finally {
             closeQuietly(statement);
+        }
+    }
+
+    public void deleteAll() throws SQLException {
+        PreparedStatement statement = null;
+
+        try {
+            statement = connection.prepareStatement("DELETE FROM users");
+            statement.execute();
+        } finally {
+            statement.close();
         }
     }
 }

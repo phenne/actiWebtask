@@ -1,5 +1,6 @@
 package servlet;
 
+import dao.UserDao;
 import data.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -22,29 +25,28 @@ public class LoginServletTest {
     private HttpServletRequest request;
     private HttpServletResponse response;
     private HttpSession session;
+    private LoginServlet servlet;
 
     @Before
     public void init() {
         request = mock(HttpServletRequest.class);
         response = mock(HttpServletResponse.class);
         session = mock(HttpSession.class);
+        servlet = new LoginServlet();
 
         when(request.getSession()).thenReturn(session);
     }
 
     @Test
     public void doGet_userNotNull() throws Exception {
-        LoginServlet loginServlet = new LoginServlet();
         when(session.getAttribute("user")).thenReturn(new User());
 
-        loginServlet.doGet(request, response);
-
+        servlet.doGet(request, response);
         verify(response).sendRedirect(ROOT_URL);
     }
 
     @Test
     public void doGet_userNull() throws Exception {
-        LoginServlet servlet = new LoginServlet();
         RequestDispatcher requestDispatcher = mock(RequestDispatcher.class);
         when(session.getAttribute("user")).thenReturn(null);
         when(request.getRequestDispatcher(USER_LIST_PAGE)).thenReturn(requestDispatcher);
@@ -55,10 +57,20 @@ public class LoginServletTest {
     }
 
     @Test
-    public void doPost_usernameNullPasswordNull() {
+    public void doPost_usernameNullPasswordNull() throws Exception {
         when(request.getAttribute("username")).thenReturn(null);
         when(request.getAttribute("password")).thenReturn(null);
+        RequestDispatcher requestDispatcher = mock(RequestDispatcher.class);
+        when(request.getRequestDispatcher(USER_LIST_PAGE)).thenReturn(requestDispatcher);
 
+        servlet.doPost(request, response);
+
+        verify(requestDispatcher).forward(request, response);
+    }
+
+    @Test
+    public void doPost_foundUserNull() throws Exception {
+        when(servlet.getUser(request, anyString())).thenReturn(null);
 
     }
 }

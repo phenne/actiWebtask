@@ -47,6 +47,14 @@ export class CurrentUserRequest extends SimpleRequest {
     }
 }
 
+export class UserByIdRequest extends SimpleRequest {
+
+    constructor(id) {
+        super("getUserById");
+        this.params = [id];
+    }
+}
+
 export class AllUsersRequest extends SimpleRequest {
 
     constructor() {

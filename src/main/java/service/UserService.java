@@ -3,7 +3,10 @@ package service;
 import dao.UserDao;
 import data.User;
 import rpc.ManagerAccessRequired;
-import rpc.error.*;
+import rpc.error.RpcException;
+import rpc.error.UnknownErrorException;
+import rpc.error.UserAlreadyExistsException;
+import rpc.error.UserDeletedException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
@@ -47,6 +50,14 @@ public class UserService {
             if (userDao.deleteUser(id) == 0) {
                 throw new UserDeletedException();
             }
+        } catch (SQLException e) {
+            throw new UnknownErrorException();
+        }
+    }
+
+    public User getUserById(Integer id, UserDao userDao) throws RpcException {
+        try {
+            return userDao.getUserById(id);
         } catch (SQLException e) {
             throw new UnknownErrorException();
         }

@@ -7,9 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class LogoutServletTest {
 
@@ -29,20 +27,22 @@ public class LogoutServletTest {
     @Test
     public void doPost_invalidateSession() throws Exception {
         LogoutServlet servlet = new LogoutServlet();
-        when(request.getSession(false)).thenReturn(session);
+        when(request.getSession()).thenReturn(session);
 
         servlet.doPost(request, response);
 
+        verify(session).invalidate();
         verify(response).sendRedirect(LOGIN_URL);
     }
 
     @Test
     public void doPost_sessionNull() throws Exception {
         LogoutServlet servlet = new LogoutServlet();
-        when(request.getSession(false)).thenReturn(null);
+        when(request.getSession()).thenReturn(null);
 
         servlet.doPost(request, response);
 
+        verify(session, times(0)).invalidate();
         verify(response).sendRedirect(LOGIN_URL);
     }
 }

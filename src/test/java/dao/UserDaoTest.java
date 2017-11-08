@@ -7,28 +7,31 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 public class UserDaoTest {
 
     private Transaction transaction;
-    private int maxId;
+    private UserDao userDao;
+    private User user = new User();
 
     @Before
     public void init() throws Exception {
         transaction = new Transaction();
-        transaction.startTransaction();
+        userDao = new UserDao();
+        userDao.associateTransaction(transaction);
+        userDao.deleteAll();
 
-        PreparedStatement statement = transaction.getConnection().prepareStatement("SELECT MAX(user_id) FROM users");
-        ResultSet resultSet = statement.executeQuery();
-
-        if (resultSet.next()) {
-            maxId = resultSet.getInt(1);
-        }
+        user = new User();
+        user.setUserName("user");
+        user.setFirstName("first");
+        user.setLastName("last");
+        user.setPassword("pass");
+        user.setManager(true);
     }
 
     @After
@@ -48,58 +51,40 @@ public class UserDaoTest {
 
     @Test
     public void insertUser() throws Exception {
-        UserDao userDao = new UserDao();
-        userDao.associateTransaction(transaction);
+        int id = userDao.insertUser(user);
+        user.setId(id);
 
+        User insertedUser = userDao.getUserById(id);
 
-        User user = new User();
-        user.setUserName("user");
-        user.setFirstName("first");
-        user.setLastName("last");
-        user.setPassword("pass");
-        user.setManager(true);
-
-        userDao.insertUser(user);
-
-        User insertedUser = userDao.getUserByUsername("user");
-
-        assertNotNull(insertedUser.getId());
-        assertEquals(user.getUserName(), insertedUser.getUserName());
-        assertEquals(user.getFirstName(), insertedUser.getFirstName());
-        assertEquals(user.getLastName(), insertedUser.getLastName());
-        assertEquals(user.getPassword(), insertedUser.getPassword());
-        assertEquals(user.isManager(), insertedUser.isManager());
+        assertEquals(user, insertedUser);
     }
 
     @Test
     public void updateUser_passNotChanged() throws Exception {
-        UserDao userDao = new UserDao();
-        userDao.associateTransaction(transaction);
+        String pass = user.getPassword();
+        int id = userDao.insertUser(user);
 
         User requestUser = new User();
-        requestUser.setId(maxId);
+        requestUser.setId(id);
         requestUser.setUserName("changedUsername");
         requestUser.setFirstName("changedFName");
         requestUser.setLastName("changedLName");
-        requestUser.setManager(true);
+        requestUser.setManager(false);
 
         userDao.updateUser(requestUser);
-        User updatedUser = userDao.getUserById(maxId);
 
-        assertEquals(requestUser.getId(), updatedUser.getId());
-        assertEquals(requestUser.getUserName(), updatedUser.getUserName());
-        assertEquals(requestUser.getFirstName(), updatedUser.getFirstName());
-        assertEquals(requestUser.getLastName(), updatedUser.getLastName());
-        assertEquals(requestUser.isManager(), updatedUser.isManager());
+        User updatedUser = userDao.getUserById(id);
+        requestUser.setPassword(pass);
+
+        assertEquals(requestUser, updatedUser);
     }
 
     @Test
     public void updateUser_passChanged() throws Exception {
-        UserDao userDao = new UserDao();
-        userDao.associateTransaction(transaction);
+        int id = userDao.insertUser(user);
 
         User requestUser = new User();
-        requestUser.setId(maxId);
+        requestUser.setId(id);
         requestUser.setUserName("changedUsername");
         requestUser.setFirstName("changedFName");
         requestUser.setLastName("changedLName");
@@ -107,24 +92,100 @@ public class UserDaoTest {
         requestUser.setPassword("changedPass");
 
         userDao.updateUser(requestUser);
-        User updatedUser = userDao.getUserById(maxId);
 
-        assertEquals(requestUser.getId(), updatedUser.getId());
-        assertEquals(requestUser.getUserName(), updatedUser.getUserName());
-        assertEquals(requestUser.getFirstName(), updatedUser.getFirstName());
-        assertEquals(requestUser.getLastName(), updatedUser.getLastName());
-        assertEquals(requestUser.getPassword(), updatedUser.getPassword());
-        assertEquals(requestUser.isManager(), updatedUser.isManager());
+        User updatedUser = userDao.getUserById(id);
+
+        assertEquals(requestUser, updatedUser);
     }
 
     @Test
     public void deleteUser() throws Exception {
-        UserDao userDao = new UserDao();
-        userDao.associateTransaction(transaction);
+        User user2 = new User();
+        user2.setUserName("user2");
+        user2.setFirstName("name2");
+        user2.setLastName("last2");
+        user2.setPassword("pass2");
+        user2.setManager(true);
 
-        int count = userDao.countUsers();
-        userDao.deleteUser(maxId);
+        userDao.insertUser(user);
+        int idToDelete = userDao.insertUser(user2);
 
-        assertEquals(count - 1, userDao.getAllUsers().size());
+        userDao.deleteUser(idToDelete);
+
+        assertEquals(userDao.countUsers(), 1);
+        assertNull(userDao.getUserById(idToDelete));
+    }
+
+    @Test
+    public void getUserById_userExists() throws Exception {
+        int id = userDao.insertUser(user);
+        user.setId(id);
+
+        User userById = userDao.getUserById(id);
+        assertEquals(user, userById);
+    }
+
+    @Test
+    public void getUserById_userNotExists() throws Exception {
+        int id = userDao.insertUser(user);
+        user.setId(id);
+
+        User userById = userDao.getUserById(id + 1);
+        assertNull(userById);
+    }
+
+    @Test
+    public void getUserByUsername_userExists() throws Exception {
+        int id = userDao.insertUser(user);
+        user.setId(id);
+
+        User userByUsername = userDao.getUserByUsername(user.getUserName());
+        assertEquals(user, userByUsername);
+    }
+
+    @Test
+    public void getUserByUsername_userNotExists() throws Exception {
+        assertNull(userDao.getUserByUsername("notExistingUsername"));
+    }
+
+    @Test
+    public void getAllUsers_noUsers() throws Exception {
+        List<User> users = userDao.getAllUsers();
+        assertEquals(0, users.size());
+    }
+
+    @Test
+    public void getAllUsers_oneUser() throws Exception {
+        int id = userDao.insertUser(user);
+        user.setId(id);
+
+        List<User> users = userDao.getAllUsers();
+
+        assertEquals(1, users.size());
+        assertEquals(user, users.get(0));
+    }
+
+    @Test
+    public void getAllUsers_severalUsers() throws Exception {
+        User user2 = new User();
+        user2.setUserName("user2");
+        user2.setFirstName("name2");
+        user2.setLastName("last2");
+        user2.setPassword("pass2");
+        user2.setManager(false);
+
+        int id1 = userDao.insertUser(user);
+        user.setId(id1);
+        int id2 = userDao.insertUser(user2);
+        user2.setId(id2);
+
+        List<User> list = new ArrayList<>();
+        list.add(user);
+        list.add(user2);
+
+        List<User> users = userDao.getAllUsers();
+
+        assertEquals(2, users.size());
+        assertEquals(list, users);
     }
 }

@@ -1,12 +1,12 @@
 package servlet;
 
 import bd.Transaction;
+import bd.TransactionManager;
 import dao.UserDao;
 import data.User;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,18 +32,12 @@ public class LoginServlet extends HttpServlet {
 
         if (userName == null && password == null) {
             req.getRequestDispatcher("/pages/login.jsp").forward(req, resp);
+            return;
         }
 
-        User foundUser = null;
-
-        try {
-            Transaction transaction = (Transaction) req.getAttribute("transaction");
-            foundUser = getUser(transaction, req.getParameter("username"));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
+        User foundUser = getUser(req, userName);
         String result = checkUserData(foundUser, password);
+
         if (result == null) {
             req.getSession(true).setAttribute("user", foundUser);
             resp.sendRedirect("/");
@@ -53,13 +47,17 @@ public class LoginServlet extends HttpServlet {
         }
     }
 
-    User getUser(Transaction transaction, String userName) throws SQLException {
-        UserDao userDao = new UserDao();
-        userDao.associateTransaction(transaction);
-        User foundUser = userDao.getUserByUsername(userName);
-        transaction.commit();
-
-        return foundUser;
+    User getUser(HttpServletRequest req, String userName) {
+        User user = null;
+        try {
+            Transaction transaction = (Transaction) req.getAttribute("transaction");
+            UserDao userDao = TransactionManager.getInstance().getAssociatedUserDao(transaction);
+            user = userDao.getUserByUsername(userName);
+            transaction.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return user;
     }
 
     String checkUserData(User user, String password) {

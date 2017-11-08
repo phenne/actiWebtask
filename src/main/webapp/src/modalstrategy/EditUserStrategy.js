@@ -1,11 +1,11 @@
-import {CurrentUserRequest} from "../RequestSender";
+import {CurrentUserRequest, UserByIdRequest} from "../RequestSender";
 import User from "../User";
 import {EditUserRequest} from "../RequestSender";
 
 export default class EditUserStrategy {
 
-    constructor(user) {
-        this.user = user;
+    constructor(id) {
+        this.id = id;
         this.headTitle = "Edit user";
         this.buttonName = "Edit";
         this.passwordRequired = false;
@@ -22,14 +22,17 @@ export default class EditUserStrategy {
         fields.manager.checked = false;
         fields.manager.disabled = false;
 
-        fields.firstName.value = this.user.firstName;
-        fields.lastName.value = this.user.lastName;
-        fields.userName.value = this.user.userName;
+        let userReq = await new UserByIdRequest(this.id).send();
+        let user = userReq.result;
+
+        fields.firstName.value = user.firstName;
+        fields.lastName.value = user.lastName;
+        fields.userName.value = user.userName;
 
         let currentUserReqResult = await new CurrentUserRequest().send();
         let currentUser = currentUserReqResult.result;
 
-        if (this.user.manager) {
+        if (user.manager) {
             fields.manager.checked = true;
             fields.manager.disabled = this.user.userName === currentUser.userName;
         }

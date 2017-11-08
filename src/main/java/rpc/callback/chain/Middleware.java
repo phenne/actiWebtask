@@ -10,6 +10,9 @@ public abstract class Middleware {
     private Middleware next;
 
     public Middleware linkWith(Middleware next) {
+        if (this == next) {
+            throw new IllegalArgumentException();
+        }
         this.next = next;
         return next;
     }
@@ -21,5 +24,9 @@ public abstract class Middleware {
             return true;
         }
         return next.check(request, method);
+    }
+
+    Middleware getNext() {
+        return next;
     }
 }

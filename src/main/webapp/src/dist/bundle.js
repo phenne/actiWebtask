@@ -12105,7 +12105,7 @@ module.exports = function (COLLECTION) {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.DeleteUserRequest = exports.CreateUserRequest = exports.EditUserRequest = exports.ManagerRequest = exports.AllUsersRequest = exports.CurrentUserRequest = undefined;
+exports.DeleteUserRequest = exports.CreateUserRequest = exports.EditUserRequest = exports.ManagerRequest = exports.AllUsersRequest = exports.UserByUserIdRequest = exports.CurrentUserRequest = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -12209,8 +12209,23 @@ var CurrentUserRequest = exports.CurrentUserRequest = function (_SimpleRequest) 
     return CurrentUserRequest;
 }(SimpleRequest);
 
-var AllUsersRequest = exports.AllUsersRequest = function (_SimpleRequest2) {
-    _inherits(AllUsersRequest, _SimpleRequest2);
+var UserByUserIdRequest = exports.UserByUserIdRequest = function (_SimpleRequest2) {
+    _inherits(UserByUserIdRequest, _SimpleRequest2);
+
+    function UserByUserIdRequest(id) {
+        _classCallCheck(this, UserByUserIdRequest);
+
+        var _this2 = _possibleConstructorReturn(this, (UserByUserIdRequest.__proto__ || Object.getPrototypeOf(UserByUserIdRequest)).call(this, "getUserById"));
+
+        _this2.params = [id];
+        return _this2;
+    }
+
+    return UserByUserIdRequest;
+}(SimpleRequest);
+
+var AllUsersRequest = exports.AllUsersRequest = function (_SimpleRequest3) {
+    _inherits(AllUsersRequest, _SimpleRequest3);
 
     function AllUsersRequest() {
         _classCallCheck(this, AllUsersRequest);
@@ -12221,17 +12236,17 @@ var AllUsersRequest = exports.AllUsersRequest = function (_SimpleRequest2) {
     return AllUsersRequest;
 }(SimpleRequest);
 
-var ManagerRequest = exports.ManagerRequest = function (_SimpleRequest3) {
-    _inherits(ManagerRequest, _SimpleRequest3);
+var ManagerRequest = exports.ManagerRequest = function (_SimpleRequest4) {
+    _inherits(ManagerRequest, _SimpleRequest4);
 
     function ManagerRequest(method, errorField) {
         _classCallCheck(this, ManagerRequest);
 
-        var _this3 = _possibleConstructorReturn(this, (ManagerRequest.__proto__ || Object.getPrototypeOf(ManagerRequest)).call(this, method));
+        var _this4 = _possibleConstructorReturn(this, (ManagerRequest.__proto__ || Object.getPrototypeOf(ManagerRequest)).call(this, method));
 
-        _this3.errorField = errorField;
-        _this3.errorHandlers.MANAGER_ACCESS_REQUIRED = new _ErrorHandlers.AccessErrorHandler();
-        return _this3;
+        _this4.errorField = errorField;
+        _this4.errorHandlers.MANAGER_ACCESS_REQUIRED = new _ErrorHandlers.AccessErrorHandler();
+        return _this4;
     }
 
     _createClass(ManagerRequest, [{
@@ -12250,12 +12265,12 @@ var EditUserRequest = exports.EditUserRequest = function (_ManagerRequest) {
     function EditUserRequest(user, errorField) {
         _classCallCheck(this, EditUserRequest);
 
-        var _this4 = _possibleConstructorReturn(this, (EditUserRequest.__proto__ || Object.getPrototypeOf(EditUserRequest)).call(this, "editUser", errorField));
+        var _this5 = _possibleConstructorReturn(this, (EditUserRequest.__proto__ || Object.getPrototypeOf(EditUserRequest)).call(this, "editUser", errorField));
 
-        _this4.params = [user];
-        _this4.errorHandlers.USER_ALREADY_EXISTS = new _ErrorHandlers.UserAlreadyExistsErrorHandler();
-        _this4.errorHandlers.USER_DELETED = new _ErrorHandlers.UserDeletedErrorHandler();
-        return _this4;
+        _this5.params = [user];
+        _this5.errorHandlers.USER_ALREADY_EXISTS = new _ErrorHandlers.UserAlreadyExistsErrorHandler();
+        _this5.errorHandlers.USER_DELETED = new _ErrorHandlers.UserDeletedErrorHandler();
+        return _this5;
     }
 
     return EditUserRequest;
@@ -12267,11 +12282,11 @@ var CreateUserRequest = exports.CreateUserRequest = function (_ManagerRequest2) 
     function CreateUserRequest(user, errorField) {
         _classCallCheck(this, CreateUserRequest);
 
-        var _this5 = _possibleConstructorReturn(this, (CreateUserRequest.__proto__ || Object.getPrototypeOf(CreateUserRequest)).call(this, "createUser", errorField));
+        var _this6 = _possibleConstructorReturn(this, (CreateUserRequest.__proto__ || Object.getPrototypeOf(CreateUserRequest)).call(this, "createUser", errorField));
 
-        _this5.params = [user];
-        _this5.errorHandlers.USER_ALREADY_EXISTS = new _ErrorHandlers.UserAlreadyExistsErrorHandler();
-        return _this5;
+        _this6.params = [user];
+        _this6.errorHandlers.USER_ALREADY_EXISTS = new _ErrorHandlers.UserAlreadyExistsErrorHandler();
+        return _this6;
     }
 
     return CreateUserRequest;
@@ -12283,11 +12298,11 @@ var DeleteUserRequest = exports.DeleteUserRequest = function (_ManagerRequest3) 
     function DeleteUserRequest(id, errorField) {
         _classCallCheck(this, DeleteUserRequest);
 
-        var _this6 = _possibleConstructorReturn(this, (DeleteUserRequest.__proto__ || Object.getPrototypeOf(DeleteUserRequest)).call(this, "deleteUser", errorField));
+        var _this7 = _possibleConstructorReturn(this, (DeleteUserRequest.__proto__ || Object.getPrototypeOf(DeleteUserRequest)).call(this, "deleteUser", errorField));
 
-        _this6.params = [id];
-        _this6.errorHandlers.USER_DELETED = new _ErrorHandlers.UserDeletedErrorHandler();
-        return _this6;
+        _this7.params = [id];
+        _this7.errorHandlers.USER_DELETED = new _ErrorHandlers.UserDeletedErrorHandler();
+        return _this7;
     }
 
     return DeleteUserRequest;
@@ -20306,10 +20321,10 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var EditUserStrategy = function () {
-    function EditUserStrategy(user) {
+    function EditUserStrategy(id) {
         _classCallCheck(this, EditUserStrategy);
 
-        this.user = user;
+        this.id = id;
         this.headTitle = "Edit user";
         this.buttonName = "Edit";
         this.passwordRequired = false;
@@ -20319,7 +20334,7 @@ var EditUserStrategy = function () {
         key: "prepareModal",
         value: function () {
             var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(fields) {
-                var currentUserReqResult, currentUser;
+                var userReq, user, currentUserReqResult, currentUser;
                 return regeneratorRuntime.wrap(function _callee$(_context) {
                     while (1) {
                         switch (_context.prev = _context.next) {
@@ -20334,24 +20349,32 @@ var EditUserStrategy = function () {
                                 fields.manager.checked = false;
                                 fields.manager.disabled = false;
 
-                                fields.firstName.value = this.user.firstName;
-                                fields.lastName.value = this.user.lastName;
-                                fields.userName.value = this.user.userName;
+                                _context.next = 11;
+                                return new _RequestSender.UserByUserIdRequest(this.id).send();
 
-                                _context.next = 14;
+                            case 11:
+                                userReq = _context.sent;
+                                user = userReq.result;
+
+
+                                fields.firstName.value = user.firstName;
+                                fields.lastName.value = user.lastName;
+                                fields.userName.value = user.userName;
+
+                                _context.next = 18;
                                 return new _RequestSender.CurrentUserRequest().send();
 
-                            case 14:
+                            case 18:
                                 currentUserReqResult = _context.sent;
                                 currentUser = currentUserReqResult.result;
 
 
-                                if (this.user.manager) {
+                                if (user.manager) {
                                     fields.manager.checked = true;
                                     fields.manager.disabled = this.user.userName === currentUser.userName;
                                 }
 
-                            case 17:
+                            case 21:
                             case "end":
                                 return _context.stop();
                         }

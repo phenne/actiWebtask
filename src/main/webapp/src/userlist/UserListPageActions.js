@@ -52,7 +52,7 @@ export default class TableActions {
             bgDiv.append($(`<button class="btn" type="button" id="${currentDeleteButtonId}">Delete</button>`));
 
             $(`#${currentEditButtonId}`).on("click", () =>
-                new CreateEditModal(new EditUserStrategy(this.userList[i])).openModal()
+                new CreateEditModal(new EditUserStrategy(this.userList[i].id)).openModal()
             );
 
             if (this.currentUser.userName === this.userList[i].userName) {
