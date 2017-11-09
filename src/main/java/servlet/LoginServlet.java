@@ -1,7 +1,7 @@
 package servlet;
 
 import bd.Transaction;
-import bd.TransactionManager;
+import bd.UserDaoFactory;
 import dao.UserDao;
 import data.User;
 
@@ -35,28 +35,31 @@ public class LoginServlet extends HttpServlet {
             return;
         }
 
-        User foundUser = getUser(req, userName);
-        String result = checkUserData(foundUser, password);
-
-        if (result == null) {
-            req.getSession(true).setAttribute("user", foundUser);
-            resp.sendRedirect("/");
-        } else {
-            req.setAttribute("fail", result);
-            req.getRequestDispatcher("/pages/login.jsp").forward(req, resp);
-        }
-    }
-
-    User getUser(HttpServletRequest req, String userName) {
-        User user = null;
+        User foundUser = null;
         try {
-            Transaction transaction = (Transaction) req.getAttribute("transaction");
-            UserDao userDao = TransactionManager.getInstance().getAssociatedUserDao(transaction);
-            user = userDao.getUserByUsername(userName);
-            transaction.commit();
+            foundUser = getUser(req, userName);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        String result = checkUserData(foundUser, password);
+        checkResult(result, req, resp, foundUser);
+    }
+
+    void checkResult(String result, HttpServletRequest request, HttpServletResponse response, User foundUser) throws IOException, ServletException {
+        if (result == null) {
+            request.getSession().setAttribute("user", foundUser);
+            response.sendRedirect("/");
+        } else {
+            request.setAttribute("fail", result);
+            request.getRequestDispatcher("/pages/login.jsp").forward(request, response);
+        }
+    }
+
+    User getUser(HttpServletRequest req, String userName) throws SQLException {
+        Transaction transaction = (Transaction) req.getAttribute("transaction");
+        UserDao userDao = UserDaoFactory.getInstance().getUserDao(transaction);
+        User user = userDao.getUserByUsername(userName);
+        transaction.commit();
         return user;
     }
 
