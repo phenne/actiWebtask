@@ -6,6 +6,10 @@ import EditUserStrategy from "../modalstrategy/EditUserStrategy";
 
 export default class TableActions {
 
+    constructor(parent) {
+        this.parent = parent;
+    }
+
     clearTable() {
         $("#userListTable tbody tr").remove();
         $("#createButton").remove();
@@ -43,7 +47,7 @@ export default class TableActions {
 
         for (let i = 0; i < tableRows.length; i++) {
             let buttonGroup = tableRows[i].insertCell(3);
-            let bgDiv = $(buttonGroup).append($("<div class='btn-group'>"));
+            let bgDiv = $("<div class='btn-group'></div>").appendTo($(buttonGroup));
 
             let currentEditButtonId = "editButton" + i;
             let currentDeleteButtonId = "deleteButton" + i;
@@ -62,8 +66,6 @@ export default class TableActions {
                     new DeleteModal(this.userList[i]).openModal();
                 })
             }
-
-            $(buttonGroup).append("</div>");
         }
     }
 

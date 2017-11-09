@@ -12105,7 +12105,7 @@ module.exports = function (COLLECTION) {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.DeleteUserRequest = exports.CreateUserRequest = exports.EditUserRequest = exports.ManagerRequest = exports.AllUsersRequest = exports.UserByUserIdRequest = exports.CurrentUserRequest = undefined;
+exports.DeleteUserRequest = exports.CreateUserRequest = exports.EditUserRequest = exports.ManagerRequest = exports.AllUsersRequest = exports.UserByIdRequest = exports.CurrentUserRequest = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -12209,19 +12209,19 @@ var CurrentUserRequest = exports.CurrentUserRequest = function (_SimpleRequest) 
     return CurrentUserRequest;
 }(SimpleRequest);
 
-var UserByUserIdRequest = exports.UserByUserIdRequest = function (_SimpleRequest2) {
-    _inherits(UserByUserIdRequest, _SimpleRequest2);
+var UserByIdRequest = exports.UserByIdRequest = function (_SimpleRequest2) {
+    _inherits(UserByIdRequest, _SimpleRequest2);
 
-    function UserByUserIdRequest(id) {
-        _classCallCheck(this, UserByUserIdRequest);
+    function UserByIdRequest(id) {
+        _classCallCheck(this, UserByIdRequest);
 
-        var _this2 = _possibleConstructorReturn(this, (UserByUserIdRequest.__proto__ || Object.getPrototypeOf(UserByUserIdRequest)).call(this, "getUserById"));
+        var _this2 = _possibleConstructorReturn(this, (UserByIdRequest.__proto__ || Object.getPrototypeOf(UserByIdRequest)).call(this, "getUserById"));
 
         _this2.params = [id];
         return _this2;
     }
 
-    return UserByUserIdRequest;
+    return UserByIdRequest;
 }(SimpleRequest);
 
 var AllUsersRequest = exports.AllUsersRequest = function (_SimpleRequest3) {
@@ -13246,8 +13246,10 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var TableActions = function () {
-    function TableActions() {
+    function TableActions(parent) {
         _classCallCheck(this, TableActions);
+
+        this.parent = parent;
     }
 
     _createClass(TableActions, [{
@@ -13364,7 +13366,7 @@ var TableActions = function () {
 
             var _loop = function _loop(i) {
                 var buttonGroup = tableRows[i].insertCell(3);
-                var bgDiv = $(buttonGroup).append($("<div class='btn-group'>"));
+                var bgDiv = $("<div class='btn-group'></div>").appendTo($(buttonGroup));
 
                 var currentEditButtonId = "editButton" + i;
                 var currentDeleteButtonId = "deleteButton" + i;
@@ -13373,7 +13375,7 @@ var TableActions = function () {
                 bgDiv.append($("<button class=\"btn\" type=\"button\" id=\"" + currentDeleteButtonId + "\">Delete</button>"));
 
                 $("#" + currentEditButtonId).on("click", function () {
-                    return new _CreateEditModal2.default(new _EditUserStrategy2.default(_this.userList[i])).openModal();
+                    return new _CreateEditModal2.default(new _EditUserStrategy2.default(_this.userList[i].id)).openModal();
                 });
 
                 if (_this.currentUser.userName === _this.userList[i].userName) {
@@ -13383,8 +13385,6 @@ var TableActions = function () {
                         new _DeleteModal2.default(_this.userList[i]).openModal();
                     });
                 }
-
-                $(buttonGroup).append("</div>");
             };
 
             for (var i = 0; i < tableRows.length; i++) {
@@ -20350,7 +20350,7 @@ var EditUserStrategy = function () {
                                 fields.manager.disabled = false;
 
                                 _context.next = 11;
-                                return new _RequestSender.UserByUserIdRequest(this.id).send();
+                                return new _RequestSender.UserByIdRequest(this.id).send();
 
                             case 11:
                                 userReq = _context.sent;
