@@ -16,6 +16,10 @@ public class UserDaoFactory {
         Instance = instance;
     }
 
+    public UserDao getUserDao() {
+        return new UserDao();
+    }
+
     public UserDao getUserDao(Transaction transaction) throws SQLException {
         UserDao userDao = new UserDao();
         userDao.associateTransaction(transaction);

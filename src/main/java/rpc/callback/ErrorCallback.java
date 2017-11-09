@@ -1,6 +1,6 @@
 package rpc.callback;
 
-import dao.UserDao;
+import bd.UserDaoFactory;
 import org.jabsorb.callback.InvocationCallback;
 import rpc.callback.chain.Checker;
 import rpc.callback.chain.ManagerAccessMiddleware;
@@ -20,7 +20,7 @@ public class ErrorCallback implements InvocationCallback {
 
         SessionMiddleware sessionMiddleware = new SessionMiddleware();
         sessionMiddleware
-                .linkWith(new UserDeletedMiddleware(new UserDao()))
+                .linkWith(new UserDeletedMiddleware(UserDaoFactory.getInstance().getUserDao()))
                 .linkWith(new ManagerAccessMiddleware());
 
         Checker checker = new Checker();
