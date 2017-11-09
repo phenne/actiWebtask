@@ -22,7 +22,7 @@ public class UserService {
         } catch (SQLIntegrityConstraintViolationException e) {
             throw new UserAlreadyExistsException();
         } catch (Exception e) {
-            throw new UnknownErrorException();
+            throw new UnknownErrorException(e);
         }
     }
 
@@ -35,7 +35,7 @@ public class UserService {
         } catch (SQLIntegrityConstraintViolationException e) {
             throw new UserAlreadyExistsException();
         } catch (SQLException e) {
-            throw new UnknownErrorException();
+            throw new UnknownErrorException(e);
         }
     }
 
@@ -51,7 +51,7 @@ public class UserService {
                 throw new UserDeletedException();
             }
         } catch (SQLException e) {
-            throw new UnknownErrorException();
+            throw new UnknownErrorException(e);
         }
     }
 
@@ -59,7 +59,7 @@ public class UserService {
         try {
             return userDao.getUserById(id);
         } catch (SQLException e) {
-            throw new UnknownErrorException();
+            throw new UnknownErrorException(e);
         }
     }
 
@@ -71,7 +71,7 @@ public class UserService {
         try {
             return userDao.getAllUsers();
         } catch (Exception e) {
-            throw new UnknownErrorException();
+            throw new UnknownErrorException(e);
         }
     }
 }
