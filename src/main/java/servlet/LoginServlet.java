@@ -1,9 +1,10 @@
 package servlet;
 
 import bd.Transaction;
-import bd.UserDaoFactory;
-import dao.UserDao;
 import data.User;
+import servlet.error.InvalidPasswordException;
+import servlet.error.InvalidUsernameException;
+import servlet.service.UserCheckerService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -35,41 +36,26 @@ public class LoginServlet extends HttpServlet {
             return;
         }
 
-        User foundUser = null;
-        try {
-            foundUser = getUser(req, userName);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        String result = checkUserData(foundUser, password);
-        checkResult(result, req, resp, foundUser);
-    }
-
-    void checkResult(String result, HttpServletRequest request, HttpServletResponse response, User foundUser) throws IOException, ServletException {
-        if (result == null) {
-            request.getSession().setAttribute("user", foundUser);
-            response.sendRedirect("/");
-        } else {
-            request.setAttribute("fail", result);
-            request.getRequestDispatcher("/pages/login.jsp").forward(request, response);
-        }
-    }
-
-    User getUser(HttpServletRequest req, String userName) throws SQLException {
+        User user = null;
         Transaction transaction = (Transaction) req.getAttribute("transaction");
-        UserDao userDao = UserDaoFactory.getInstance().getUserDao(transaction);
-        User user = userDao.getUserByUsername(userName);
-        transaction.commit();
-        return user;
+
+        UserCheckerService checkerService = UserCheckerService.getInstance();
+
+        try {
+            user = checkerService.check(userName, password, transaction);
+        } catch (SQLException e) {
+            req.setAttribute("fail", "Connection error! Please try later");
+            req.getRequestDispatcher("/pages/login.jsp").forward(req, resp);
+        } catch (InvalidUsernameException e) {
+            req.setAttribute("fail", "Invalid username!");
+            req.getRequestDispatcher("/pages/login.jsp").forward(req, resp);
+        } catch (InvalidPasswordException e) {
+            req.setAttribute("fail", "Invalid password!");
+            req.getRequestDispatcher("/pages/login.jsp").forward(req, resp);
+        }
+
+        req.getSession().setAttribute("user", user);
+        resp.sendRedirect("/");
     }
 
-    String checkUserData(User user, String password) {
-        if (user == null) {
-            return "Invalid username!";
-        }
-        if (!user.getPassword().equals(password)) {
-            return "Invalid password!";
-        }
-        return null;
-    }
 }

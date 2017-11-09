@@ -8,7 +8,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -107,13 +109,17 @@ public class UserDaoTest {
         user2.setPassword("pass2");
         user2.setManager(true);
 
-        userDao.insertUser(user);
+        int id = userDao.insertUser(user);
+        user.setId(id);
         int idToDelete = userDao.insertUser(user2);
 
         userDao.deleteUser(idToDelete);
 
-        assertEquals(userDao.countUsers(), 1);
-        assertNull(userDao.getUserById(idToDelete));
+        List<User> list = new ArrayList<>();
+        list.add(user);
+
+
+        assertEquals(userDao.getAllUsers(), list);
     }
 
     @Test
@@ -179,13 +185,12 @@ public class UserDaoTest {
         int id2 = userDao.insertUser(user2);
         user2.setId(id2);
 
-        List<User> list = new ArrayList<>();
-        list.add(user);
-        list.add(user2);
+        Set<User> users = new HashSet<>();
+        users.add(user);
+        users.add(user2);
 
-        List<User> users = userDao.getAllUsers();
+        Set<User> bdUsers = new HashSet<>(userDao.getAllUsers());
 
-        assertEquals(2, users.size());
-        assertEquals(list, users);
+        assertEquals(users, bdUsers);
     }
 }

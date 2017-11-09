@@ -3,7 +3,7 @@ package bd;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class Transaction {
+public class Transaction implements AutoCloseable {
 
     private Connection connection;
 
@@ -45,6 +45,15 @@ public class Transaction {
 
     public Connection getConnection() {
         return connection;
+    }
+
+    @Override
+    public void close() {
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
 

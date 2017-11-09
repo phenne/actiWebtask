@@ -6,14 +6,14 @@ import java.sql.SQLException;
 
 public class UserDaoFactory {
 
-    private static UserDaoFactory Instance = new UserDaoFactory();
+    private static UserDaoFactory instance = new UserDaoFactory();
 
     public static UserDaoFactory getInstance() {
-        return Instance;
+        return instance;
     }
 
     public static void setInstance(UserDaoFactory instance) {
-        Instance = instance;
+        UserDaoFactory.instance = instance;
     }
 
     public UserDao getUserDao() {

@@ -54,6 +54,7 @@ public class UserServiceTest {
     public void getAllUsers_success() throws Exception {
         userService.getAllUsers(userDao);
         verify(userDao).getAllUsers();
+        // TODO: 09.11.2017 нормальные проверки 
     }
 
     @Test(expected = UnknownErrorException.class)
@@ -162,12 +163,5 @@ public class UserServiceTest {
         when(userDao.deleteUser(anyInt())).thenThrow(SQLException.class);
 
         userService.deleteUser(1, userDao, request);
-    }
-
-    private User getUserById(int id) {
-        return users.stream()
-                .filter(user -> user.getId().equals(id))
-                .findFirst()
-                .orElse(null);
     }
 }

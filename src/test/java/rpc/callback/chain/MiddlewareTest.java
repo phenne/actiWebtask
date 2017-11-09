@@ -1,6 +1,5 @@
 package rpc.callback.chain;
 
-import org.junit.Before;
 import org.junit.Test;
 import rpc.error.RpcException;
 

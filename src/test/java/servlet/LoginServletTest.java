@@ -1,46 +1,50 @@
 package servlet;
 
 import bd.Transaction;
-import bd.UserDaoFactory;
-import dao.UserDao;
 import data.User;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import servlet.error.InvalidPasswordException;
+import servlet.error.InvalidUsernameException;
+import servlet.service.UserCheckerService;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.nullable;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import java.sql.SQLException;
+
+import static org.mockito.Mockito.*;
 
 public class LoginServletTest {
 
     private static final String ROOT_URL = "/";
     private static final String USER_LIST_PAGE = "/pages/login.jsp";
 
+    private static final String FAIL = "fail";
+    private static final String SQL_EXCEPTION_MESSAGE = "Connection error! Please try later";
+    private static final String INVALID_USERNAME_MESSAGE = "Invalid username!";
+    private static final String INVALID_PASSWORD_MESSAGE = "Invalid password!";
+
     private HttpServletRequest request;
     private HttpServletResponse response;
     private HttpSession session;
     private LoginServlet servlet;
+    private RequestDispatcher requestDispatcher;
 
     @Before
     public void init() {
         request = mock(HttpServletRequest.class);
         response = mock(HttpServletResponse.class);
         session = mock(HttpSession.class);
+        requestDispatcher = mock(RequestDispatcher.class);
         servlet = new LoginServlet();
 
+        when(request.getParameter("username")).thenReturn("username");
+        when(request.getParameter("password")).thenReturn("password");
         when(request.getSession()).thenReturn(session);
+        when(request.getRequestDispatcher(USER_LIST_PAGE)).thenReturn(requestDispatcher);
     }
 
     @Test
@@ -53,9 +57,7 @@ public class LoginServletTest {
 
     @Test
     public void doGet_userNull() throws Exception {
-        RequestDispatcher requestDispatcher = mock(RequestDispatcher.class);
         when(session.getAttribute("user")).thenReturn(null);
-        when(request.getRequestDispatcher(USER_LIST_PAGE)).thenReturn(requestDispatcher);
 
         servlet.doGet(request, response);
 
@@ -64,10 +66,8 @@ public class LoginServletTest {
 
     @Test
     public void doPost_usernameNullPasswordNull() throws Exception {
-        when(request.getAttribute("username")).thenReturn(null);
-        when(request.getAttribute("password")).thenReturn(null);
-        RequestDispatcher requestDispatcher = mock(RequestDispatcher.class);
-        when(request.getRequestDispatcher(USER_LIST_PAGE)).thenReturn(requestDispatcher);
+        when(request.getParameter("username")).thenReturn(null);
+        when(request.getParameter("password")).thenReturn(null);
 
         servlet.doPost(request, response);
 
@@ -75,66 +75,63 @@ public class LoginServletTest {
     }
 
     @Test
-    public void getUser() throws Exception {
-        UserDaoFactory factory = mock(UserDaoFactory.class);
-        UserDaoFactory.setInstance(factory);
-        UserDao userDao = mock(UserDao.class);
-        Transaction transaction = mock(Transaction.class);
-
+    public void doPost_sqlException() throws Exception {
+        Transaction transaction =  mock(Transaction.class);
         when(request.getAttribute("transaction")).thenReturn(transaction);
-        when(factory.getUserDao(any(Transaction.class))).thenReturn(userDao);
+        UserCheckerService service = mock(UserCheckerService.class);
+        UserCheckerService.setInstance(service);
 
-        servlet.getUser(request, "userName");
+        when(service.check("username", "password", transaction)).thenThrow(SQLException.class);
 
-        verify(userDao).getUserByUsername("userName");
-        verify(transaction).commit();
+        servlet.doPost(request, response);
+
+        verify(request).setAttribute(FAIL, SQL_EXCEPTION_MESSAGE);
+        verify(requestDispatcher).forward(request, response);
     }
 
     @Test
-    public void checkUserData_userNull() throws Exception {
-        String result = servlet.checkUserData(null, "pass");
+    public void doPost_invalidUsername() throws Exception {
+        Transaction transaction = mock(Transaction.class);
+        when(request.getAttribute("transaction")).thenReturn(transaction);
+        UserCheckerService service = mock(UserCheckerService.class);
+        UserCheckerService.setInstance(service);
 
-        assertEquals(result, "Invalid username!");
+        when(service.check("username", "password", transaction)).thenThrow(InvalidUsernameException.class);
+
+        servlet.doPost(request, response);
+
+        verify(request).setAttribute(FAIL, INVALID_USERNAME_MESSAGE);
+        verify(requestDispatcher).forward(request, response);
     }
 
     @Test
-    public void checkUserData_userPassNotEquals() throws Exception {
+    public void doPost_invalidPassword() throws Exception {
+        Transaction transaction = mock(Transaction.class);
+        when(request.getAttribute("transaction")).thenReturn(transaction);
+        UserCheckerService service = mock(UserCheckerService.class);
+        UserCheckerService.setInstance(service);
+
+        when(service.check("username", "password", transaction)).thenThrow(InvalidPasswordException.class);
+
+        servlet.doPost(request, response);
+
+        verify(request).setAttribute(FAIL, INVALID_PASSWORD_MESSAGE);
+        verify(requestDispatcher).forward(request, response);
+    }
+
+    @Test
+    public void doPost_noException() throws Exception {
+        Transaction transaction = mock(Transaction.class);
+        when(request.getAttribute("transaction")).thenReturn(transaction);
+        UserCheckerService service = mock(UserCheckerService.class);
+        UserCheckerService.setInstance(service);
+
         User user = new User();
-        user.setPassword("anotherPass");
+        when(service.check("username", "password", transaction)).thenReturn(user);
 
-        String result = servlet.checkUserData(user, "pass");
-
-        assertEquals(result, "Invalid password!");
-    }
-
-    @Test
-    public void checkUserData_allOk() throws Exception {
-        User user = new User();
-        user.setPassword("pass");
-
-        String result = servlet.checkUserData(user, "pass");
-
-        assertNull(result);
-    }
-
-    @Test
-    public void checkResult_resultNull() throws Exception {
-        User user = new User();
-        servlet.checkResult(null, request, response, user);
+        servlet.doPost(request, response);
 
         verify(session).setAttribute("user", user);
-        response.sendRedirect(ROOT_URL);
-    }
-
-    @Test
-    public void checkResult_resultNotNull() throws Exception {
-        String result = "fail";
-        RequestDispatcher requestDispatcher = mock(RequestDispatcher.class);
-        when(request.getRequestDispatcher(USER_LIST_PAGE)).thenReturn(requestDispatcher);
-
-        servlet.checkResult(result, request, response, new User());
-
-        verify(request).setAttribute("fail", result);
-        verify(requestDispatcher).forward(request, response);
+        verify(response).sendRedirect(ROOT_URL);
     }
 }
