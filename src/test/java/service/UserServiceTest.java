@@ -13,7 +13,9 @@ import javax.servlet.http.HttpSession;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
@@ -46,15 +48,22 @@ public class UserServiceTest {
         HttpSession session = mock(HttpSession.class);
 
         when(request.getSession()).thenReturn(session);
-        userService.getCurrentUser(request);
-        verify(session).getAttribute("user");
+        when(session.getAttribute("user")).thenReturn(managerUser);
+
+        assertSame(userService.getCurrentUser(request), managerUser);
     }
 
     @Test
     public void getAllUsers_success() throws Exception {
-        userService.getAllUsers(userDao);
-        verify(userDao).getAllUsers();
-        // TODO: 09.11.2017 нормальные проверки 
+        List<User> bdUsers = new ArrayList<>();
+        bdUsers.add(managerUser);
+        bdUsers.add(regularUser);
+
+        when(userDao.getAllUsers()).thenReturn(bdUsers);
+
+        List<User> users = userService.getAllUsers(userDao);
+
+        assertEquals(new HashSet<>(bdUsers), new HashSet<>(users));
     }
 
     @Test(expected = UnknownErrorException.class)
