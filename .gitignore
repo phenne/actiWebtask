@@ -2,3 +2,6 @@
 /target/*
 *.iml
 /src/main/webapp/node_modules/*
+/node_modules/
+/src/main/webapp/src/dist/bundle.js
+/src/main/webapp/WEB-INF/classes/
