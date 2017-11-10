@@ -13,7 +13,7 @@ public class Transaction implements AutoCloseable {
      * @throws SQLException
      */
     public void startTransaction() throws SQLException {
-        connection = DataSourceGetter.getDataSource().getConnection();
+        connection = DataSourceGetter.getInstance().getDataSource().getConnection();
         connection.setAutoCommit(false);
     }
 

@@ -18,4 +18,11 @@
         <servlet-name>Jabsorb</servlet-name>
         <url-pattern>/jsonrpc</url-pattern>
     </servlet-mapping>
+
+    <resource-ref>
+        <res-ref-name>jdbc/userlist</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+        <res-sharing-scope>Shareable</res-sharing-scope>
+    </resource-ref>
 </web-app>

@@ -12,6 +12,7 @@ export default class EditUserStrategy {
     }
 
     async prepareModal(fields) {
+        console.log("Im opened");
         $(fields.firstName.parentNode).removeClass("has-error");
         $(fields.lastName.parentNode).removeClass("has-error");
         $(fields.userName.parentNode).removeClass("has-error");
