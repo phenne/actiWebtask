@@ -5,20 +5,6 @@
 <head>
     <link rel="stylesheet" href="/src/lib/css/bootstrap.css">
     <script src="../src/dist/bundle.js"></script>
-    <%--<script src="/src/lib/jquery-3.2.1.js"></script>--%>
-    <%--<script src="/src/lib/bootstrap.min.js"></script>--%>
-    <%--<script src="/src/lib/jquery-3.2.1.js"></script>
-    <script src="/src/User.js"></script>
-    <script src="/src/RequestSender.js"></script>
-    <script src="/src/userlist/UserListPageActions.js"></script>
-    <script src="/src/ValidationService.js"></script>
-    <script src="/src/modal/CreateEditModalFields.js"></script>
-    <script src="/src/modal/CreateEditModal.js"></script>
-    <script src="/src/modal/DeleteModal.js"></script>
-    <script src="/src/modalstrategy/CreateUserStrategy.js"></script>
-    <script src="/src/ErrorHandlers.js"></script>
-    <script src="/src/modalstrategy/EditUserStrategy.js"></script>
-    <script src="/src/Main.js"></script>--%>
     <title>Title</title>
 </head>
 <body>

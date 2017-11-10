@@ -23,16 +23,16 @@ export default class EditUserStrategy {
         fields.manager.disabled = false;
 
         let userReq = await new UserByIdRequest(this.id).send();
-        let user = userReq.result;
+        this.user = userReq.result;
 
-        fields.firstName.value = user.firstName;
-        fields.lastName.value = user.lastName;
-        fields.userName.value = user.userName;
+        fields.firstName.value = this.user.firstName;
+        fields.lastName.value = this.user.lastName;
+        fields.userName.value = this.user.userName;
 
         let currentUserReqResult = await new CurrentUserRequest().send();
         let currentUser = currentUserReqResult.result;
 
-        if (user.manager) {
+        if (this.user.manager) {
             fields.manager.checked = true;
             fields.manager.disabled = this.user.userName === currentUser.userName;
         }
